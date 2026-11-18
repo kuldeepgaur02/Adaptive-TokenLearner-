@@ -267,28 +267,3 @@ python token_histogram.py \
   projects/myfusion/configs/voxelnet_tl_combined_Kuldeep.py \
   work_dirs/voxelnet_tl_combined/epoch_40.pth
 ```
-
----
-
-## Honest limits
-
-These are stated here for the same reason they are stated in the report: they
-are the first things a careful reader would check.
-
-- **Single runs.** Every configuration was trained once, with no repeated
-  seeds. The large differences are unlikely to be run-to-run noise; the 0.25
-  AP attributed to the token prior certainly cannot be distinguished from it,
-  and is not claimed.
-- **The token reduction is not a proportional speed-up.** Measured wall-clock
-  is 1.06× with one decoder layer and 1.13× with three, because 76% of the
-  head's work happens before the gate can decide anything — all 100 attention
-  maps and all 100 tokens must be built first. The saving is real but confined
-  to the decoder.
-- **The budget itself costs recall.** 711 of the 5,646 validation cars sit in
-  frames where the gate opened fewer tokens than there are objects, so 12.6%
-  are unreachable and recall is capped at 87.4% before the decoder runs. That
-  is a consequence of choosing T = 10, and raising it is the cheapest piece of
-  future work.
-- **LiDAR only, Car class only.** The intended camera–LiDAR fusion branch
-  scores zero for reasons outside this head, so every number reported is
-  LiDAR-only.
